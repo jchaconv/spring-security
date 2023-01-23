@@ -1,0 +1,74 @@
+Repo del curso:
+https://github.com/bharaththippireddy/springsecurityfundamentals
+
+
+SECCIÓN 3 : THE FUNDAMENTALS
+::::::::::::::::::::::::::::
+
+
+Authentication: Tener acceso a un app indicando quién soy.
+    - Basic
+    - Form based
+    - OAuth
+
+Authorization: Mediante el concepto de "role" podemos tener acceso
+               a ciertas funcionalidades del sistema.
+
+
+Confidentiality: La data es segura mediante el encrypt/decrypt
+
+
+CSRF: Cross site request forgery(falsificación) previene que otra app haga submit en nuestro sitio.
+
+
+CORS: Cross origing resource sharing consiste en la comunicación entre dominios
+      diferentes
+
+
+Signatures: El resource server sabe que el token fue emitido por el Authorization server
+            mediante los signatures.
+
+
+Security Components:
+
+
+Authentication filter → manager → provider → User details service & Password encoder
+La respuesta vuelve al filter y este en caso de éxito deja guardado los datos en un
+Security context mediante AuthenticationSuccessHandler o procede al error con un
+AuthenticationFailureHandler
+
+
+Se creó el proyecto first-app con las dependencias de maven:
+Spring web y spring security.
+
+
+
+
+
+
+
+
+
+
+docker pull mysql
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
