@@ -37,9 +37,151 @@ La respuesta vuelve al filter y este en caso de éxito deja guardado los datos e
 Security context mediante AuthenticationSuccessHandler o procede al error con un
 AuthenticationFailureHandler
 
+********************************************************************
 
-Se creó el proyecto first-app con las dependencias de maven:
-Spring web y spring security.
+15. Spring Security in action
+
+Se crea el proyecto firs-app con las dependencias:
+Spring Web y Spring Security
+
+Run a la aplicación y llamar desde postman a:
+
+http://localhost:8080/hello
+
+Al crear un endpoint simple y ejecutar el proyecto se ve que retorna 401
+Se tiene que poner basic auth y el uuid que aparece por defecto en la consola:
+
+Using generated security password: a34492d8-1040-440c-a34f-82f4144d6f41
+
+En postman:
+Basic auth -> 
+username: user
+password: [token]
+
+Responde correctamente
+
+********************************************************************
+
+16. Resending Basic Auth Details
+
+Cuando se envía el request por postman se guarda la cookie JSESSIONID
+Es por eso que si quitamos el auth y hacemos el request seguirá respondiendo 200
+porque está guardado en memoria la cookie. Interesante.
+
+Borrar la cookie y volver a lanzar el request, ahora retorna 401 unauthorized
+
+********************************************************************
+
+17. Config before and after 3.0
+
+Hay una diferencia considerable en la clase Configuration dependiendo de la versión de spring boot(2 o 3)
+
+********************************************************************
+
+18. Create Custom Security Configuration
+
+Se creó la clase config/MySecurityConfig con el método filterChain
+
+********************************************************************
+
+19. Custom User Details Service
+
+En config/MySecurityConfig se agregaron los méotodos:
+userDetailsService: Para crear una autenticación con usuario y password
+passwordEncoder: Para hacer un encode del password
+
+Al llamar al endpoint http://localhost:8080/hello
+Retorna 401 porque las credenciales ya no son validas.
+Las cambiamos por las que pusimos en userDetailsService:
+user: julio
+pass: chacon
+
+Ahora retorna 200 con un basic auth configurado
+
+********************************************************************
+
+21. Create Custom AuthenticationProvider
+
+Se crea config/MyAuthenticationProvider con los métodos:
+authenticate: establece el UsernamePasswordAuthenticationToken(manera de autenticarse)
+supports: declara el tipo de autenticación
+
+Para probar necesito comentar el método userDetailsService de config/MySecurityConfig
+borrar las cookies en postman y probar
+
+Funciona correctamente
+
+********************************************************************
+
+23. Use form based login
+
+Para usar un formulario de login, comentar el método
+filterChain de config/MySecurityConfig y agregar la línea:
+httpSecurity.formLogin();
+
+Ingresar a http://localhost:8080/hello desde un navegador
+y nos aparece una página con un login simple
+
+Funciona correctamente
+
+
+********************************************************************
+
+24. Few More Methods
+
+Se crea el endpoint /bye
+Y con la configuracion creada hasta ahora ambos cargan con el form de login
+
+Solo para permitir autorización en el endpoint /hello:
+955736828
+Modificar filterChain de config/MySecurityConfig
+
+httpSecurity.authorizeHttpRequests().requestMatchers("/hello").authenticated().anyRequest().denyAll();
+
+La versión corta es:
+httpSecurity.authorizeHttpRequests().requestMatchers("/hello").authenticated();
+
+Sucede que requestMatchers recibiendo un String no es reconocido por el IDE
+
+********************************************************************
+
+25. Create custom filter
+
+Crear config/MySecurityFilter y
+
+Agregar en filterChain de config/MySecurityConfig:
+httpSecurity.addFilterBefore(new MySecurityFilter(), BasicAuthenticationFilter.class);
+
+Para añadir un filtro en la ejecución del app
+
+********************************************************************
+
+26. Other Filter Classes
+
+Hay otras interfaces con las que se pueden hacer filtros
+tienen diferentes implementaciones pero no se revisaron
+
+********************************************************************
+
+
+
+
+
+
+
+********************************************************************
+
+
+
+********************************************************************
+
+
+
+********************************************************************
+
+
+
+********************************************************************
 
 
 
