@@ -5,9 +5,11 @@ import com.springcloud.productservice.model.Product;
 import com.springcloud.productservice.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,11 +28,20 @@ public class ProductController {
 
     @PostMapping("/product")
     public Product createProduct(@RequestBody Product product) {
-        System.out.println(couponUrl);
-        System.out.println("product.getPrice():" + product.getPrice());
-        System.out.println("product.getCouponCode():" + product.getCouponCode());
-        Coupon coupon = restTemplate.getForObject(couponUrl + product.getCouponCode(), Coupon.class);
+
+        String username = "doug@bailey.com";
+        String password = "doug";
+        String authCredentials = username + ":" + password;
+        byte[] base64AuthCredentials = Base64.getEncoder().encode(authCredentials.getBytes());
+        String authHeader = "Basic " + new String(base64AuthCredentials);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, authHeader);
+
+        //Coupon coupon = restTemplate.getForObject(couponUrl + product.getCouponCode(), Coupon.class);
+        Coupon coupon = restTemplate.exchange(couponUrl + product.getCouponCode(), HttpMethod.GET, new HttpEntity<>(headers), Coupon.class).getBody();
         System.out.println("coupon.getDiscount():" + coupon.getDiscount());
+
         product.setPrice(product.getPrice().subtract(coupon.getDiscount()));
         return productRepository.save(product);
     }
@@ -45,6 +56,8 @@ public class ProductController {
         return productRepository.findAll();
     }
 
-
+    /*private boolean isValidCouponCode(String code) {
+        return code.matches("[A-Z]+");
+    }*/
 
 }

@@ -1,14 +1,9 @@
-package com.springcloud.couponservice.model;
-
-import java.util.Set;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+package com.springcloud.productservice.model;
 
 import org.springframework.security.core.GrantedAuthority;
+
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Role implements GrantedAuthority {

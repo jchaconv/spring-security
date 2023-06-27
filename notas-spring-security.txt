@@ -1,10 +1,9 @@
 Repo del curso:
 https://github.com/bharaththippireddy/springsecurityfundamentals
 
-
+:::::::::::::::::::::::::::::
 SECCIÓN 3 : THE FUNDAMENTALS
-::::::::::::::::::::::::::::
-
+:::::::::::::::::::::::::::::
 
 Authentication: Tener acceso a un app indicando quién soy.
     - Basic
@@ -162,7 +161,7 @@ tienen diferentes implementaciones pero no se revisaron
 
 ********************************************************************
 
-
+:::::::::::::::::::::::::::::::::
 SECCIÓN 4 : CREATE MICROSERVICES
 :::::::::::::::::::::::::::::::::
 
@@ -215,15 +214,14 @@ docker pull mysql
 docker run -d --name mysql-container -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydatabase mysql:latest
 
 Ejecutar en una consola en el directorio que donde está el script:
-docker exec -i f340f4d1e157 mysql -u root -ppassword mydatabase < tables.sql
+docker exec -i 77967784a923 mysql -u root -ppassword mydatabase < tables.sql
 
 Como es gitbash de win10 ejecutar así:
-winpty docker exec -it f340f4d1e157 bash
-bash-4.4# mysql -u root -p
-Enter password: password
-mysql> USE mydatabase;
-mysql> SELECT * FROM coupon;
-Empty set (0.00 sec)
+winpty docker exec -it 77967784a923 bash
+mysql -u root -ppassword
+USE mydatabase;
+SHOW TABLES;
+SELECT * FROM coupon;
 
 Ejecutar el app y en postman:
 
@@ -272,6 +270,7 @@ Se crea el app product-service con las dependencias de maven:
 
 Agregar en el properties la config de coupon-service y:
 server.port=9090
+couponService.url = http://localhost:8080/coupon/api/coupons/
 
 Test en postman (post):
 http://localhost:9090/api/v1/product
@@ -281,22 +280,189 @@ http://localhost:9090/api/v1/product
     "description": "Iphone 10",
     "price": 15000
 }
+------
+{
+    "name": "Laptop",
+    "description": "Laptop Dell",
+    "price": 25632
+}
 
-Se creó correctamente
+Se crearon correctamente
 
 mysql> SELECT * FROM product;
 +----+--------+-------------+-----------+
 | id | name   | description | price     |
 +----+--------+-------------+-----------+
 |  1 | Iphone | Iphone 10   | 15000.000 |
+|  2 | Laptop | Laptop Dell | 25632.000 |
 +----+--------+-------------+-----------+
-1 row in set (0.00 sec)
+
+
+Adicionalmente creé el get de los productos:
+
+http://localhost:9090/api/v1/products
+
+[
+    {
+        "id": 1,
+        "name": "Iphone",
+        "description": "Iphone 10",
+        "price": 15000.000
+    },
+    {
+        "id": 2,
+        "name": "Laptop",
+        "description": "Laptop Dell",
+        "price": 25632.000
+    }
+]
+
+******************************************
+
+Integrar ambos microservicios:
+
+-En product-service se agrega en Product:
+
+@Transient   → Para que no tenga impacto en la bd
+private String couponCode;
+...getter and setter
+
+-Crear /dto/Coupon (Se pegó el contenido de la clase del 
+otro servicio pero sin anotaciones)
+
+-Se inyecta el valor de la property en la variable de esta manera:
+
+@Value("${couponService.url}")
+private String couponUrl;
+
+-Se hizo una lógica para añadir el descuento en createProduct() invocando
+al servicio de cupones con RestTemplate.
+
+-En el ProductServiceApplication se creó el Bean de RestTemplate
+
+
+Probar en postman(POST):
+http://localhost:9090/api/v1/product
+
+Request:
+
+{
+    "name": "Monitor",
+    "description": "Monitor Lg 27 Pulgadas",
+    "price": 840,
+    "couponCode": "SUPERSALE"
+}
+
+Response:
+
+{
+    "id": 3,
+    "name": "Monitor",
+    "description": "Monitor Lg 27 Pulgadas",
+    "price": 830.000,
+    "couponCode": "SUPERSALE"
+}
+
+Se aplicó correctamente el descuento del cupon
+
+- Se creó el getProductById
+
+Probar en postman(GET):
+http://localhost:9090/api/v1/product/3
+
+{
+    "id": 3,
+    "name": "Monitor",
+    "description": "Monitor Lg 27 Pulgadas",
+    "price": 830.000,
+    "couponCode": null
+}
+
+:::::::::::::::::::::::::::::
+SECCIÓN 5 : SECURE REST APIs
+:::::::::::::::::::::::::::::
+
+Crear tablas en la bd con el script security_tables.sql
+
+Ejecutar en una consola en el directorio que donde está el script:
+docker exec -i 77967784a923 mysql -u root -ppassword mydatabase < security_tables.sql
+
+Para acceder al container:
+winpty docker exec -it 77967784a923 bash
+mysql -u root -ppassword
+USE mydatabase;
+
+Comenzamos con coupon-service:
+
+-En el pom.xml agregar:
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+-Agregar:
+
+/model/User → Mapeo de entidades
+/model/Role → Implementa Granted Authority para poder usarlo en el userDetail
+
+/repositories/UserRepository → Solo se define el método findByEmail y JPA hace el query
+/repositories/RoleRepository
+
+/security/UserDetailServiceImpl → @Service
+/security/config/WebSecurityConfig:
+    -@Configuration
+    -En filterChain() se pone solo authorizeRequests, el path con antMatchers y los roles que pueden acceder
+    -Si uso esto: .antMatchers(HttpMethod.GET, "/coupon/api/coupons/**").hasAnyRole("USER", "ADMIN")
+     se puede ingresar cualquier couponCode y lo acepta mejor usar regular expressions. Al parecer el antMatchers no reconoce
+     la expresión regular {code:^[A-Z]*$}
+    -Se deshabilita csrf que viene activo por default
+
+Se probó el GET:
+http://localhost:8080/coupon/api/coupons/EXTRASALE
+Response:
+{
+    "timestamp": "2023-06-27T15:46:22.518+00:00",
+    "status": 401,
+    "error": "Unauthorized",
+    "path": "/coupon/api/coupons/EXTRASALE"
+}
+
+Poner en authorization → basic auth
+username: doug@bailey.com
+password: doug
+
+Hacer lo mismo para el create-coupon
+Borrar la cookie y ver que sale error si no se mandan las credenciales
+Es un falso positivo.
+
+*Se logró poner basic auth a los endpoints de product-service:
+
+.antMatchers(HttpMethod.GET, "/api/v1/product/**").hasAnyRole("USER", "ADMIN")
+.antMatchers(HttpMethod.GET, "/api/v1/products").hasAnyRole("USER", "ADMIN")
+.antMatchers(HttpMethod.POST, "/api/v1/product").hasRole("ADMIN")
+
+
+******************************************
 
 
 
-********************************************************************
 
 
+
+******************************************
+
+
+
+
+
+******************************************
+
+
+
+
+
+******************************************
 
 
 
