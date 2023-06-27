@@ -31,7 +31,6 @@ Signatures: El resource server sabe que el token fue emitido por el Authorizatio
 
 Security Components:
 
-
 Authentication filter → manager → provider → User details service & Password encoder
 La respuesta vuelve al filter y este en caso de éxito deja guardado los datos en un
 Security context mediante AuthenticationSuccessHandler o procede al error con un
@@ -86,7 +85,7 @@ Se creó la clase config/MySecurityConfig con el método filterChain
 
 19. Custom User Details Service
 
-En config/MySecurityConfig se agregaron los méotodos:
+En config/MySecurityConfig se agregaron los métodos:
 userDetailsService: Para crear una autenticación con usuario y password
 passwordEncoder: Para hacer un encode del password
 
@@ -164,35 +163,85 @@ tienen diferentes implementaciones pero no se revisaron
 ********************************************************************
 
 
+SECCIÓN 4 : CREATE MICROSERVICES
+:::::::::::::::::::::::::::::::::
+
+Se crea el app coupon-service con las dependencias de maven:
+Spring Web
+Spring Data JPA
+MYSQL Driver
+
+Las dependencias funcionaron bien con:
+<version>2.7.10</version> de maven y java11
+Hay un error al crear desde spring initialzr, por defecto pone java17
+
+********************************************************************
+
+30. Create model and repository
+
+Se crean las clases:
+model/Coupon
+repositories/CouponRepository 
+
+31. Create the Rest Controller
+
+Se crea la clase:
+controllers/CouponController con los métodos:
+create y getCoupon pero con una implementación antigua
+
+********************************************************************
+
+32. Configure the DataSource
+
+Levantar el container:
+docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=test1234 -d mysql:latest
+
+Obtener la ip del container:
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' some-mysql
+172.17.0.2
 
 
+En application.properties:
 
+spring.datasource.url=jdbc:mysql://172.17.0.2:3306/mydb
+spring.datasource.username=root
+spring.datasource.password=test1234
 
+Ejecutar el app y en postman:
+
+http://localhost:8080/coupon/api/coupons
+POST
+{
+    "code":"SUPERSALE",
+    "discount":10,
+    "expDate":"12/12/2023"
+}
+
+Se guarda bien en la bd
+
+http://localhost:8080/coupon/api/coupons/SUPERSALE
+GET
+
+Retorna bien la información
 
 ********************************************************************
 
 
 
 ********************************************************************
-
-
-
-********************************************************************
-
-
-
-********************************************************************
-
-
-
-
-
-
-
-
 
 
 docker pull mysql
+
+
+
+
+
+
+
+
+
+
 
 
 
