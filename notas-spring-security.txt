@@ -442,6 +442,7 @@ Es un falso positivo.
 .antMatchers(HttpMethod.GET, "/api/v1/products").hasAnyRole("USER", "ADMIN")
 .antMatchers(HttpMethod.POST, "/api/v1/product").hasRole("ADMIN")
 
+En el ProductController tuve que enviar el basic auth para la invocación del coupon-service
 
 ******************************************
 
