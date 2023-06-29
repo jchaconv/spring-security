@@ -1,14 +1,42 @@
 package com.springcloud.couponservice.security.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
+
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 
 @Configuration
 public class WebSecurityConfig {
+
+    /*Inicio Sección 6*/
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    @Bean
+    SecurityContextRepository securityContextRepository() {
+        return new DelegatingSecurityContextRepository(new RequestAttributeSecurityContextRepository(),
+                new HttpSessionSecurityContextRepository());
+    }
+
+    AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return new ProviderManager(provider);
+    }
+    /*Fin Sección 6*/
 
     @Bean
     BCryptPasswordEncoder passwordEncoder() {
@@ -17,13 +45,25 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.httpBasic();
-
+        //httpSecurity.httpBasic();
+        /* Inicio Seccion 6 */
+        //httpSecurity.formLogin();
+        /* Fin Seccion 6 */
         httpSecurity
-                .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/coupon/api/coupons/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.POST, "/coupon/api/coupons").hasRole("ADMIN")
+                .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.GET, "/coupon/api/coupons/**", "/", "/showGetCoupon", "/getCoupon").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/showCreateCoupon", "/createCoupon", "/createResponse").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/coupon/api/coupons", "/saveCoupon").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/getCoupon").hasAnyRole("USER", "ADMIN")
+                /* Inicio Seccion 6 */
+                .requestMatchers("/", "/login", "/showReg", "/registerUser").permitAll()
+                .and().logout().logoutSuccessUrl("/")
+                /* Fin Seccion 6 */
                 .and().csrf().disable();
+
+        /*Inicio Sección 6*/
+        httpSecurity.securityContext(context -> context.requireExplicitSave((true)));
+        /*Fin Sección 6*/
 
         return httpSecurity.build();
     }

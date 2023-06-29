@@ -185,7 +185,7 @@ repositories/CouponRepository
 31. Create the Rest Controller
 
 Se crea la clase:
-controllers/CouponController con los métodos:
+controllers/CouponRestController con los métodos:
 create y getCoupon pero con una implementación antigua
 
 ********************************************************************
@@ -444,28 +444,86 @@ Es un falso positivo.
 
 En el ProductController tuve que enviar el basic auth para la invocación del coupon-service
 
+:::::::::::::::::::::::::::::
+SECCIÓN 6 : SECURE A WEBAPP
+:::::::::::::::::::::::::::::
+
+En coupon-service:
+
+- Agregar la dependency en el pom.xml:
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+
+-Pegar los html's en /resources/templates
+
+-Pegar el CouponController que llama a los html's
+
+-Se modificó el WebSecurityConfig para poder invocar al path base /
+y también para tener un formLogin, entre otros(paths del controller)
+
+Se hicieron las pruebas en localhost:8080 y se puede ingresar al login
+y hacer creación y get de coupon
+
+******************************************
+
+Custom Login:
+
+-Crear:
+/security/SecurityService
+/security/SecurityServiceImpl
+
+-Modificar:
+/security/config/WebSecurityConfig
+
+- Pegar login.html
+
+-Crear UserController
+******************************************
+Save Security Context
+
+-Modificar WebSecurityConfig → Se actualizó a 3.0.8 la versión de Spring Boot en
+el pom para que reconozca la clase DelegatingSecurityContextRepository
+-Además se tuvo que actualizar a authorizeHttpRequests y requestMatchers
+
+-Modificar:
+*SecurityService
+*SecurityServiceImpl
+*UserController → son inyectados autom. el request y response
+
+******************************************
+Para testear, modificar el WebSecurityConfig
+quitar el formLogin y agregar el permitAll para / y /login
+faltó probar!
+******************************************
+Logout:
+Agregar .and().logout().logoutSuccessUrl("/") en WebSecurityConfig
+También se puede usar así en caso se necesite:
+.and().logout().logoutSuccessUrl("/").deleteCookies()
+.and().logout().logoutSuccessUrl("/").clearAuthentication(true)
+******************************************
+Implement User Registration
+Pegar en templates el archivo registerUser.html
+Agregar cambios en UserController
+*Al agregar el encoder autom. reconoce el encoder que tenemos en WebSecurityConfig
+*Agregar paths a WebSecurityConfig
+
+Se crean los usuarios pero no tienen asignado un rol. Se debe usar Hashset para añadir lógica
+faltó probar!
+
 ******************************************
 
 
-
-
+******************************************
 
 
 ******************************************
 
-
-
-
-
 ******************************************
 
 
-
-
-
 ******************************************
-
-
 
 
 
