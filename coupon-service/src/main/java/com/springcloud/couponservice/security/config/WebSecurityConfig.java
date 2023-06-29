@@ -19,7 +19,11 @@ import org.springframework.security.web.context.DelegatingSecurityContextReposit
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import java.util.List;
 
 @Configuration
 public class WebSecurityConfig {
@@ -55,7 +59,11 @@ public class WebSecurityConfig {
         /* Fin Seccion 6 */
         httpSecurity
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/coupon/api/coupons/**", "/", "/showGetCoupon", "/getCoupon").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/coupon/api/coupons/**", "/", "/showGetCoupon", "/getCoupon", "/couponDetails")
+                /* Inicio Seccion 8 - CORS */
+                //.hasAnyRole("USER", "ADMIN")
+                .permitAll()
+                /* Fin Seccion 8 - CORS */
                 .requestMatchers(HttpMethod.GET, "/showCreateCoupon", "/createCoupon", "/createResponse").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/coupon/api/coupons", "/saveCoupon").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/getCoupon").hasAnyRole("USER", "ADMIN")
@@ -67,15 +75,26 @@ public class WebSecurityConfig {
                 //.and().csrf().disable();
                 ;
                 /* Fin Seccion 7 */
-
+        /* Inicio Seccion 8 - CORS */
         /* Inicio Seccion 7 */
-        httpSecurity.csrf(csrfCustomizer -> {
+        /*httpSecurity.csrf(csrfCustomizer -> {
             csrfCustomizer.ignoringRequestMatchers("/coupon/api/coupons/**");
             RequestMatcher requestMatchers = new RegexRequestMatcher("/coupon/api/coupons/**", "POST");
             requestMatchers = new MvcRequestMatcher(new HandlerMappingIntrospector(), "/getCoupon");
             csrfCustomizer.ignoringRequestMatchers(requestMatchers);
-        });
+        });*/
         /* Fin Seccion 7 */
+        httpSecurity.cors(corsCustomizer -> {
+            CorsConfigurationSource configurationSource = request -> {
+                CorsConfiguration corsConfiguration = new CorsConfiguration();
+                corsConfiguration.setAllowedOrigins(List.of("localhost:3000"));
+                corsConfiguration.setAllowedMethods(List.of("GET"));
+                return corsConfiguration;
+            };
+            corsCustomizer.configurationSource(configurationSource);
+        });
+
+        /* Fin Seccion 8 - CORS */
 
         /*Inicio Sección 6*/
         httpSecurity.securityContext(context -> context.requireExplicitSave((true)));

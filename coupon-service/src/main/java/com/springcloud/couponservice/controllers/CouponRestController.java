@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/coupon/api")
+/* Inicio Seccion 8 - CORS */
+@CrossOrigin
+/* Fin Seccion 8 - CORS */
 public class CouponRestController {
 
     @Autowired

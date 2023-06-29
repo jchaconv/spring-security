@@ -540,42 +540,34 @@ httpSecurity.csrf(csrfCustomizer -> {
     csrfCustomizer.ignoringRequestMatchers(requestMatchers);
 });
 
+:::::::::::::::::
+SECCIÓN 8 : CORS
+:::::::::::::::::
+Cross Origin Request Sharing
+
+No permite el consumo desde otros dominios
+Se deben habilitar los siguientes:
+
+Access-Control-Allow-Origin
+Access-Control-Allow-Methods
+Access-Control-Allow-Headers
+
+Los cambios se hicieron en WebSecurityConfig
+
+Faltó probar la parte de react
+
+Cambios en el CouponRestController → @CrossOrigin
+
+Se ve que ya no sale el error de CORS en el front
+
+Se realizó una config customizada en WebSecurityConfig
+
+/* Inicio Seccion 8 - CORS */
+/* Fin Seccion 8 - CORS */
+******************************************
+
 ******************************************
 
 
 ******************************************
-
-******************************************
-
-
-******************************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
