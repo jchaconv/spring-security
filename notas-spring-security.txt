@@ -512,8 +512,33 @@ Agregar cambios en UserController
 Se crean los usuarios pero no tienen asignado un rol. Se debe usar Hashset para añadir lógica
 faltó probar!
 
+:::::::::::::::::
+SECCIÓN 7 : CSRF
+:::::::::::::::::
+Cross Site Request Forgery
+Entrar a Create Coupon:
+View page source, todo normal en el form
+
+Quitar el csrf().disable(); de WebSecurityConfig
+eso es todo.
+
+Al darle de nuevo a View page source se ve:
+name="_csrf" value="token"
+La idea es que spring security permite los submits cuando se encuentran estos tokens
+
+Para hacer logout se usa el botón del form porque solo ahí Spring Security puede enviar el token
+y no en <a>...</a>
 ******************************************
 
+Use Custom Configuration
+Se usó esta config para ignorar csrf en algunos paths
+
+httpSecurity.csrf(csrfCustomizer -> {
+    csrfCustomizer.ignoringRequestMatchers("/coupon/api/coupons/**");
+    RequestMatcher requestMatchers = new RegexRequestMatcher("/coupon/api/coupons/**", "POST");
+    requestMatchers = new MvcRequestMatcher(new HandlerMappingIntrospector(), "/getCoupon");
+    csrfCustomizer.ignoringRequestMatchers(requestMatchers);
+});
 
 ******************************************
 

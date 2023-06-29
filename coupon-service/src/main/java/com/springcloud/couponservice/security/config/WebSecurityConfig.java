@@ -16,6 +16,10 @@ import org.springframework.security.web.context.RequestAttributeSecurityContextR
 import org.springframework.security.web.context.SecurityContextRepository;
 
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
 public class WebSecurityConfig {
@@ -59,7 +63,19 @@ public class WebSecurityConfig {
                 .requestMatchers("/", "/login", "/showReg", "/registerUser").permitAll()
                 .and().logout().logoutSuccessUrl("/")
                 /* Fin Seccion 6 */
-                .and().csrf().disable();
+                /* Inicio Seccion 7 */
+                //.and().csrf().disable();
+                ;
+                /* Fin Seccion 7 */
+
+        /* Inicio Seccion 7 */
+        httpSecurity.csrf(csrfCustomizer -> {
+            csrfCustomizer.ignoringRequestMatchers("/coupon/api/coupons/**");
+            RequestMatcher requestMatchers = new RegexRequestMatcher("/coupon/api/coupons/**", "POST");
+            requestMatchers = new MvcRequestMatcher(new HandlerMappingIntrospector(), "/getCoupon");
+            csrfCustomizer.ignoringRequestMatchers(requestMatchers);
+        });
+        /* Fin Seccion 7 */
 
         /*Inicio Sección 6*/
         httpSecurity.securityContext(context -> context.requireExplicitSave((true)));
