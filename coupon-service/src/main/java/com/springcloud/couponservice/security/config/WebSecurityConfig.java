@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,7 +16,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
-import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+//import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -26,18 +27,29 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import java.util.List;
 
 @Configuration
+@EnableWebSecurity
 public class WebSecurityConfig {
 
     /*Inicio Sección 6*/
     @Autowired
     UserDetailsService userDetailsService;
 
+    /* Para evitar errores de compatibilidad con Spring Boot
     @Bean
     SecurityContextRepository securityContextRepository() {
         return new DelegatingSecurityContextRepository(new RequestAttributeSecurityContextRepository(),
                 new HttpSessionSecurityContextRepository());
     }
+    */
 
+    //Se agrega para poder avanzar con los tests
+    @Bean
+    public HttpSessionSecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
+
+
+    @Bean
     AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
@@ -58,17 +70,18 @@ public class WebSecurityConfig {
         //httpSecurity.formLogin();
         /* Fin Seccion 6 */
         httpSecurity
-                .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/coupon/api/coupons/**", "/", "/showGetCoupon", "/getCoupon", "/couponDetails")
+                .authorizeRequests()
+                //.requestMatchers(HttpMethod.GET, "/coupon/api/coupons/**", "/", "/showGetCoupon", "/getCoupon", "/couponDetails")
+                .antMatchers(HttpMethod.GET, "/coupon/api/coupons/**", "/", "/showGetCoupon", "/getCoupon", "/couponDetails")
                 /* Inicio Seccion 8 - CORS */
                 //.hasAnyRole("USER", "ADMIN")
                 .permitAll()
                 /* Fin Seccion 8 - CORS */
-                .requestMatchers(HttpMethod.GET, "/showCreateCoupon", "/createCoupon", "/createResponse").hasAnyRole("USER", "ADMIN")
-                .requestMatchers(HttpMethod.POST, "/coupon/api/coupons", "/saveCoupon").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/getCoupon").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/showCreateCoupon", "/createCoupon", "/createResponse").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/coupon/api/coupons", "/saveCoupon").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/getCoupon").hasAnyRole("USER", "ADMIN")
                 /* Inicio Seccion 6 */
-                .requestMatchers("/", "/login", "/showReg", "/registerUser").permitAll()
+                .antMatchers("/", "/login", "/showReg", "/registerUser").permitAll()
                 .and().logout().logoutSuccessUrl("/")
                 /* Fin Seccion 6 */
                 /* Inicio Seccion 7 */
@@ -97,7 +110,15 @@ public class WebSecurityConfig {
         /* Fin Seccion 8 - CORS */
 
         /*Inicio Sección 6*/
-        httpSecurity.securityContext(context -> context.requireExplicitSave((true)));
+        /* Inicio Seccion 9 - Security Testing */
+        //Se comenta y se agrega para avanzar con los tests
+        //httpSecurity.securityContext(context -> context.requireExplicitSave((true)));
+        httpSecurity
+                .securityContext()
+                .securityContextRepository(securityContextRepository());
+                //.and()
+                //.csrf().disable();
+        /* Fin Seccion 9 - Security Testing */
         /*Fin Sección 6*/
 
         return httpSecurity.build();

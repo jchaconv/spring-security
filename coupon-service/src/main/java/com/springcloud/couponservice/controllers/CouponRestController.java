@@ -5,6 +5,7 @@ import com.springcloud.couponservice.repositories.CouponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,11 +19,17 @@ public class CouponRestController {
     private CouponRepository repository;
 
     @RequestMapping(value = "/coupons", method = RequestMethod.POST)
+    /* Inicio Seccion 9 - Security Testing */
+    @PreAuthorize("hasRole('ADMIN')")
+    /* Fin Seccion 9 - Security Testing */
     public Coupon create(@RequestBody Coupon coupon) {
         return repository.save(coupon);
     }
 
     @GetMapping("/coupons/{code}")
+    /* Inicio Seccion 9 - Security Testing */
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    /* Fin Seccion 9 - Security Testing */
     public ResponseEntity<Object> getCoupon(@PathVariable String code) {
         if (!isValidCouponCode(code)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid coupon code");

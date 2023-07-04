@@ -1,6 +1,18 @@
 Repo del curso:
 https://github.com/bharaththippireddy/springsecurityfundamentals
 
+Nota importante del desarrollo del curso:
+
+En la sección 9 : Security Testing
+Tuve muchos conflictos en el coupon-service porque creo que hay una confusión en las versiones de spring boot, jpa
+y security que maneja el curso. Al final todo está subido para evitar conflictos; y de la manera en que está no se puede usar:
+- DelegatingSecurityContextRepository → Se dejó comentado el método
+- requestMatchers → Se dejó como antMatchers
+
+También se añadieron los siguientes:
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL8Dialect
+@Bean en AuthenticationManager de WebSecurityConfig y @EnableWebSecurity para la clase
+
 :::::::::::::::::::::::::::::
 SECCIÓN 3 : THE FUNDAMENTALS
 :::::::::::::::::::::::::::::
@@ -564,7 +576,26 @@ Se realizó una config customizada en WebSecurityConfig
 
 /* Inicio Seccion 8 - CORS */
 /* Fin Seccion 8 - CORS */
-******************************************
+
+:::::::::::::::::::::::::::::
+SECCIÓN 9 : SECURITY TESTING
+:::::::::::::::::::::::::::::
+Cambios en coupon-service:
+
+Añadir dependency en pom:
+
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-test</artifactId>
+    <scope>test</scope>
+</dependency>
+
+*Se agregó @PreAuthorize en dos métodos de CouponRestController
+
+/* Inicio Seccion 9 - Security Testing */
+/* Fin Seccion 9 - Security Testing */
+
+Falta hacer que falle el test porque está sin authentication
 
 ******************************************
 

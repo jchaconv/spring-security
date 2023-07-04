@@ -3,13 +3,16 @@ package com.springcloud.couponservice.controllers;
 import com.springcloud.couponservice.model.User;
 import com.springcloud.couponservice.repositories.UserRepository;
 import com.springcloud.couponservice.security.SecurityService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+/*import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;*/
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class UserController {
@@ -42,7 +45,7 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("/")
+    @GetMapping("/login")
     public String login(String email, String password, HttpServletRequest request, HttpServletResponse response) {
         /* Inicio Seccion 6 */
         //public String login(String email, String password) {
