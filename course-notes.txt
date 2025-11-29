@@ -1,0 +1,111 @@
+
+Course: 
+Spring Security Zero to Master along with JWT,OAUTH2
+
+start: 28/11/2025
+
+
+
+***************************
+Section 1: Getting Started
+***************************
+
+- Create a spring boot project
+    - java17, maven
+    - spring boot 4.0.0
+    - group: com.vilelo
+    - artifact: springsec-section1
+    - description: Demo project for Spring Boot and Spring Security
+    - Dependencies: web, devtools
+
+- Create a simple controller, run the app and go to http://localhost:8080/welcome
+    - the log pattern format is interesting
+
+- Secure the app:
+
+    - add the spring-security dependency
+    - rerun and there is no access to /welcome, it will show a login
+    - user, and the password is in the console log
+    - if i refresh the tab, the app is not asking the credentials again and again
+
+    - i can add user.name and password in properties
+
+- What is Security & Why it is important?
+
+    - Similar to banks, our apps hold valuable data. Is necessary to secure the app in
+      order to protect the data and business logic.
+
+    -  Is a non functional requirement because no client ask for security in their app.
+       Security is important as scalability, performance and availability.
+
+    - Implement security from development phase. The more earlier you implement security in your app
+      the better app you build.
+
+    - Security Is important because if we lose data, the business loss money.
+
+    - Spring security helps to avoid common attacks.
+
+    - Responsability of the dev: the security of the web app layer.
+        - Authentication
+        - Authorization
+        - Protection from exploits like CSRF, CORS, etc.
+
+
+- Servlets & Filters
+
+    - Everything in java web apps are driven by Servlets.
+      The Servlet Container (Web Server, Tomcat the most used) converts the HTTP messages into ServletRequest(Java object),
+      and deliver it to the Servlet method as a parameter. Also, receives the output of the
+      ServletResponse.
+
+      With spring framework we are just worry about coding the business logic and not of the servlet configurations.
+
+    - Filters: intercept each request/response and do some pre work before business logic.
+
+- Internal architecture of Spring Security  (* indicates that is a single component)
+
+    - User entered credentials
+    * Spring Security Filters, to identify if the user is authenticated
+    * Authentication, is an object(username, passwrord, isAuth=false) that represents the credentials
+    * Authentication Manager, take the request and deliver it to the next component
+    * Authentication Providers, using it's components, this do the autentication(comparison)
+        * UserDetailsManager/Service
+        * Password Encoder
+
+    * Security Context, if the auth is correct, the filter stores the session in this component
+    - finally, filter sends a response.
+
+- Demo of Spring Security internal flow (don't do it)
+
+    - Logging trace in .properties
+    - settings -> maven -> importing -> Automatically download (3 checks)
+        - also, in the maven option(right hand), there are options to download source and docs
+        - put a breakpoint inside doFilter method
+        - do some navigation through lib classes.
+
+    - JSESSIONID is the cookie that spring security save in the context and use it to validate the authentication.
+
+
+
+********************************************************
+Section 2: Changing the default security configurations
+********************************************************
+
+Services without security:
+    - /contact
+    - /notices
+
+Services with security:
+    - /myAccount
+    - /myBalance
+    - /myLoans
+    - /myCards
+
+    - Create project springsec-section2
+    - Configuration class
+    - don't use .permiteAll() 
+    - after denyAll() we receive a 403
+    - http.formLogin().disabled() not recommended because is deprecated
+    - 
+
+
