@@ -114,8 +114,22 @@ Section 3: Defining & Managing Users using InMemoryUserDetailsManager
 
 branch: feature/section3-managing-users-in-memory
 
-- delete username and password from properties
-- edit ProjectSecurityConfig
-- create UserDetailsService bean
-- use the InMemoryUserDetailsManager class
-- {noop}  --> indicates there is no password encoder
+    - I used the pre-request option in postman, so I just need to put /myAccount
+      to test the API, and provide the specified credentials in this exercise.
+
+    Configuring users using InMemoryUserDetailsManager
+
+        - delete username and password from properties
+        - edit ProjectSecurityConfig
+        - create UserDetailsService bean
+        - use the InMemoryUserDetailsManager class
+        - {noop}  --> indicates there is no password encoder
+        - test with /myAccount
+
+commit: f66b947815a23
+
+--------------------------------------
+
+    Configuring PasswordEncoder using PasswordEncoderFactories
+
+        - 
