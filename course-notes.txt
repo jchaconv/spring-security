@@ -105,7 +105,17 @@ Services with security:
     - Configuration class
     - don't use .permiteAll() 
     - after denyAll() we receive a 403
-    - http.formLogin().disabled() not recommended because is deprecated
-    - 
+    - disable formLogin and httpBasic authentication
 
 
+**********************************************************************
+Section 3: Defining & Managing Users using InMemoryUserDetailsManager
+**********************************************************************
+
+branch: feature/section3-managing-users-in-memory
+
+- delete username and password from properties
+- edit ProjectSecurityConfig
+- create UserDetailsService bean
+- use the InMemoryUserDetailsManager class
+- {noop}  --> indicates there is no password encoder
