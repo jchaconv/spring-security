@@ -138,6 +138,36 @@ commit: f66b947815a23
             - password: 5678  for the admin
 
 
-commit: 
+commit: 969235f6897bb
+
+--------------------------------------
+
+    CompromisedPasswordChecker: To ask for a robust password
+
+        - add bean CompromisedPasswordChecker on ProjectSecurityConfig
+        - passwords are the same for user and admin Admin@3s12
+        - not working for version changes.
+
+        @Bean
+        public CompromisedPasswordChecker compromisedPasswordChecker() {
+            return new HaveIBeenPwnedRestApiPasswordChecker();
+        }
+
+        - finally I don't add this fragment.
+
+--------------------------------------
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+
 
 --------------------------------------
