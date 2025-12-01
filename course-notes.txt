@@ -158,7 +158,37 @@ commit: 969235f6897bb
 --------------------------------------
 
 
+******************************************************
+Section 4: Defining & Managing Users using a Database
+******************************************************
 
+branch: feature/section4-managing-users-in-database
+
+
+    - Creating MySQL Databse using Docker
+
+        - using the Ubuntu distribution on windows 11
+        - sudo apt install docker.io
+        - sudo usermod -aG docker $USER    ---> adding my user to the docker group
+        - newgrp docker  ----> this temporarily updates your current shell's group memberships without requiring a full logout.
+        
+        - in case of certficate error:
+
+            - openssl s_client -connect registry-1.docker.io:443 -showcerts
+            - sudo nano /usr/local/share/ca-certificates/proxy1.crt   ---> ctrl + o then ctrl + x
+            - sudo nano /usr/local/share/ca-certificates/proxy2.crt
+            - sudo nano /usr/local/share/ca-certificates/proxy3.crt
+            - sudo update-ca-certificates
+            - sudo service docker stop
+            - sudo service docker start
+
+        - docker pull mysql:latest
+        - docker run -p 3306:3306 --name springsecurity -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=eazybank -d mysql
+
+        - https://sqlectron.github.io/
+            - name: springsecurity
+            - localhost:3306
+            - root:root
 
 
 
