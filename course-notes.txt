@@ -5,6 +5,10 @@ Spring Security Zero to Master along with JWT,OAUTH2
 start: 28/11/2025
 
 
+my repo: https://github.com/jchaconv/spring-security
+
+course repo: https://github.com/eazybytes/spring-security
+
 
 ***************************
 Section 1: Getting Started
@@ -194,10 +198,16 @@ branch: feature/section4-managing-users-in-database
 
 --------------------------------------
 
+    - Understanding JdbcUserDetailsManager & creating Users inside the DB
 
+        - use the querys from users.ddl without "ignorecase" (spring-security)
+        - i saved this query on sql/script.sql
 
+            create table users(username varchar(50) not null primary key,password varchar(500) not null,enabled boolean not null);
+            create table authorities (username varchar(50) not null,authority varchar(50) not null,constraint fk_authorities_users foreign key(username) references users(username));
+            create unique index ix_auth_username on authorities (username,authority);
 
-
+        - execute the query inside the script file.
 
 
 --------------------------------------
