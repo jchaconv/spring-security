@@ -211,3 +211,51 @@ branch: feature/section4-managing-users-in-database
 
 
 --------------------------------------
+
+
+    - Using JdbcUserDetailsManager to perform authentication
+
+        - add Dependencies to the project: jdbc, mysql and jpa
+        - add connection properties
+        - edit UserDetailsService adding  JdbcUserDetailsManager on ProjectSecurityConfig
+        - user:EazyBytes@12345
+        - successful test
+
+
+--------------------------------------
+
+    - Creating our own custom tables for Authentication
+        - create table customer and insert rows
+    
+    - Creating JPA Entity and repository classes for new table
+        - create model/Customer and use lombok
+        - create CustomerRepository
+        - add annotations on the main class. currently commented
+    
+    - Creating our own custom implementation of UserDetailsService
+        - create config/EazyBankUserDetailsService
+        - edit ProjectSecurityConfig, comment the jdbc manager.
+
+
+
+
+--------------------------------------
+
+
+    - Building a new REST API to allow the registration of new User
+
+        - create controller/UserController
+        - make public the endpoint in ProjectSecurityConfig
+        - for transactions methods the framework enforces CSRF protection
+            - edit the ProjectSecurityConfig
+        - the test was successful with /register endpoint and no auth.
+
+
+
+--------------------------------------
+
+
+
+
+
+--------------------------------------
