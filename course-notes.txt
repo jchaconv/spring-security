@@ -255,7 +255,72 @@ branch: feature/section4-managing-users-in-database
 --------------------------------------
 
 
+******************************************************
+Section 5: Password Management with PasswordEncoders
+******************************************************
 
+branch: feature/section5-password-mngmnt-with-encoders
+
+encode: no secure, just convert data from one form to another. Not the right option for password management.
+
+    - prepare a plain.txt file with this value Jchacon@4432
+    - openssl base64 -in plain.txt -out encode.txt
+    - openssl base64 -d -in encode.txt -out decode.txt
+
+
+encryption: Not the right option for password management.
+
+    - plain text -> encrypted text (cipher text) -> plain text  | encrypt and decrypt processes. 
+    - suitable for encrpyt data in rest and at rest(ex: s3 bucket aws)
+    - uses a key. guarantees confidentiality. encryption reversible by using the key.
+        - symmetric: only one key for encrypt and decrypt
+        - asymmetric: public key for encrypt and private key for decrypt. ideal for data in transit.
+
+    - openssl enc -aes-256-cbc -pass pass:12345 -pbkdf2 -in plaint.txt -out encrpyt.txt -base64
+    - openssl enc -aes-256-cbc -base64 -pass:12345 -d -pbkdf2 -in encrpyt.txt -out decrypt.txt
+
+
+hashing: securily way to store passwords in database
+
+    - input any kind of data and produce a unique string of bytes(Digest or Hash)
+    - irreversibility, not possible to deduce the input, not possible to reverse the process to know the
+      original input. Only 1 way.
+    - the output hash value is always the same for a specific input.
+    - typical approach to storing passwords, just store de hash value and compare them at the moment of login
+    
+    - PasswordEncoder interface and its popular implementations such as BCryptPasswordEncoder
+    - DelegatingPasswordEncoder to delegates to the correct impl based on the prefix of the password. ex: {bcrypt}12345
+    
+    Drawbacks of hashing:
+        - Brute force attack: calculate the hash value trying different plain text values. ex: calculate pin.
+        - Dictionary or Rainbow attach: table with all possible combinations. millions of hash records.
+        - Super fast: even for hackers, milliseconds.
+
+    How to overcome Drawbacks:
+
+        - limit the failed attempts
+        - enforce the complexity of plaint text password
+        - 
+        
+        - Salts during password hashing
+            - password given by the client: 1234
+            - salt value(random value): xyzm
+            - total value given to the hash function: xyzm1234 ----> hash value: qwerty
+            - saved value on database: salt + hash value ---> xyzmqwerty
+            - when the login take place, the framework get the salt value with the plain text password and perform the hash function.
+            - if the value matches with the stored in database, then the login is successful, otherwise it will be rejected.
+
+        - use password hashing algorithms(bcrypt, scrypt, argo2 etc) to delay the process of hashing. It requires lots of cpu time and ram memory.
+          the hacked may spend years to discover a robust password.
+
+    Tests:
+
+    - echo -n "Juliochaconv@12345" | openssl dgst -sha256     --> execute multiple times and the output is always the same
+    
+    - openssl dgst -sha256 jdk.*****.dmg     ---> to compare the hash value with the provide of oracle in the download link (sha-256)
+
+    In the project I use the bcrypt algorithm with the passwordencoderdelegation in ProjectSecurityConfig class.
 
 
 --------------------------------------
+
