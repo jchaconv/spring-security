@@ -23,7 +23,8 @@ public class ProjectSecurityConfig {
     @Bean
     SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.redirectToHttps(AbstractHttpConfigurer::disable) //Only http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                 .requestMatchers("/myAccount", "/myBalance", "/myCards", "/myLoans").authenticated()
                 .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());

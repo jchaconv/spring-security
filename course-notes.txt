@@ -390,11 +390,22 @@ Environment specific Security configurations using Profiles
 
 - For now just create a new prod config for ProjectSecurityConfig
 
-
   ---------------------------------
 
+*********************************************************************
+Section 7: Spring Security customizations for most common use cases
+*********************************************************************
 
+branch: feature/section7-customization-most-common-use-cases
 
+    - Most users use applications with https protocol ensures the data is properly secure .
+    - Accept only https protocol:
+        - currently the app accepts both protocol. send a request and go to console in postman.
 
+        - add properties
+        - use updated configs in ProjectSecurityConfig
+        - run this command and save the keystore on resources folder. The keystore will be generated on the command line path folder
+            - keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore.p12 -validity 3650
 
-
+        - then go to this url: https://localhost:8443/myAccount
+        - the test is successful and http protocol is not allowed
