@@ -269,7 +269,7 @@ encode: no secure, just convert data from one form to another. Not the right opt
 
 
 encryption: Not the right option for password management.
-
+    - transform data in such a way that guarantees confidentiality.
     - plain text -> encrypted text (cipher text) -> plain text  | encrypt and decrypt processes. 
     - suitable for encrpyt data in rest and at rest(ex: s3 bucket aws)
     - uses a key. guarantees confidentiality. encryption reversible by using the key.
@@ -300,7 +300,6 @@ hashing: securily way to store passwords in database
 
         - limit the failed attempts
         - enforce the complexity of plaint text password
-        - 
         
         - Salts during password hashing
             - password given by the client: 1234
@@ -323,4 +322,59 @@ hashing: securily way to store passwords in database
 
 
 --------------------------------------
+
+*********************************************************************
+Section 6: Understanding Authentication Provider and Implementing it
+*********************************************************************
+
+branch: feature/section6-understanding-authentication-provider
+
+- The ProviderManager identifies which is the appropiate Provider to authenticate a certain request
+- we need to provide our own AuthenticationProvider
+    - I think if there is an specific authentication requirements
+
+- Check the interfaces and implementations:
+    - Authentication
+        - TestingAuthenticationProvider
+    - AuthenticationProvider
+    - ProviderManager (is a class)
+
+
+---------------------------------
+
+Implementing and Customizing the AuthenticationProvider inside our application
+
+- tip: settings -> editor -> file types -> ignored files and folders
+    - press + and after write press enter
+        - .mvn
+        - .idea
+        - .gitignore
+        - .gitattributes
+
+- Create config.EazyBankUserPwdAuthenticationProvider
+    - copy logic from AbstractUserDetailsAuthenticationProvider
+    - in authenticate method is possible to add the specific authentication logic requirements
+
+- run docker container and then start the app 
+
+- To connect to MySQL from DBeaver, it is necessary to change this parameters in "Driver properties" option:
+    - allowPublicKeyRetrieval=true
+    - useSSL=false
+
+- Test in debug mode
+    - breakpoints in support and authenticate methods
+    - invoke /myAccount  julio_chacon@epamneoris.com | ep4m55667
+    - uncheck the "hide frames from libraries" option in debug mode
+    - The default DaoAuthenticationProvider is relegated because of our own AuthenticationProvider
+    - the success method is executed first and then the authenticate method
+    - test successful
+
+
+
+
+
+
+
+
+
 
