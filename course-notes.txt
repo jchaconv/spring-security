@@ -329,6 +329,9 @@ Section 6: Understanding Authentication Provider and Implementing it
 
 branch: feature/section6-understanding-authentication-provider
 
+- If we have a custom authentication requirement that is not fulfilled by Spring Security framework
+  then we can build our own authentication logic by implementing the AuthenticationProvider interface.
+
 - The ProviderManager identifies which is the appropiate Provider to authenticate a certain request
 - we need to provide our own AuthenticationProvider
     - I think if there is an specific authentication requirements
@@ -369,9 +372,26 @@ Implementing and Customizing the AuthenticationProvider inside our application
     - the success method is executed first and then the authenticate method
     - test successful
 
+---------------------------------
+
+Environment specific Security configurations using Profiles
+
+- some changes in properties and a new profile file
+- log: SpringsecSection2Application - The following 1 profile is active: "prod"
+- config env variables. go to modify run configurations (from the start application class)
+    - --spring.profiles.active=prod  --> this take precedence over the properties file, even if I have a different env active in that file
+    - the environment configuration doesn't work. For now just use properties
+
+- Create EazyBankUserPwdAuthenticationProvider equal(in content) to the existent and add this annotation:
+    - @Profile("prod")
+    - @Profile("!prod")  --> in the previous provider and delete the password validation
+    - this means: "in lower environments don't validate the password. any value is ok"
+    - test the application with default profile active. Any private endpoint is accessible with any credentials
+
+- For now just create a new prod config for ProjectSecurityConfig
 
 
-
+  ---------------------------------
 
 
 
