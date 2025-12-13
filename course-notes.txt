@@ -409,3 +409,42 @@ branch: feature/section7-customization-most-common-use-cases
 
         - then go to this url: https://localhost:8443/myAccount
         - the test is successful and http protocol is not allowed
+
+  -----------------------
+
+  Exception Handling in Spring Security framework
+
+    - 401 unauthorized error
+    - 403 forbidden error, properly authenticated but don't have enough privileges.
+
+    To handle these errors:
+        - ExceptionTranslationFilter
+            - AuthenticationException (401) --> AuthenticationEntryPoint
+            - AccessDeniedException   (403) --> AccessDeniedHandler
+                                                    - AccessDeniedHandlerImpl (most used implementation)
+
+    Create CustomBasicAuthenticationEntryPoint class to handle 401
+    Copy the logic of BasicAuthenticationEntryPoint commence()
+    To link with spring security edit the ProjectSecurityConfig adding http.basic new configuration
+
+    - Test the changes with invalid user and no auth, you will se the custom message for 401:
+
+    {
+        "timestamp": "2025-12-13T11:09:48.580966800",
+        "status": 401,
+        "error": "Unauthorized",
+        "message": "User details not found for the user: julio_chacon1@epamneoris.com",
+        "path": "/myAccount"
+    }
+
+    {
+        "timestamp": "2025-12-13T11:07:26.058352800",
+        "status": 401,
+        "error": "Unauthorized",
+        "message": "Full authentication is required to access this resource",
+        "path": "/myAccount"
+    }
+
+-----------------------
+
+
