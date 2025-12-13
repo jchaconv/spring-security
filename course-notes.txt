@@ -398,7 +398,7 @@ Section 7: Spring Security customizations for most common use cases
 
 branch: feature/section7-customization-most-common-use-cases
 
-    - Most users use applications with https protocol ensures the data is properly secure .
+    - Most users use applications with https protocol ensures the data is properly secure
     - Accept only https protocol:
         - currently the app accepts both protocol. send a request and go to console in postman.
 
@@ -423,9 +423,14 @@ branch: feature/section7-customization-most-common-use-cases
             - AccessDeniedException   (403) --> AccessDeniedHandler
                                                     - AccessDeniedHandlerImpl (most used implementation)
 
-    Create CustomBasicAuthenticationEntryPoint class to handle 401
-    Copy the logic of BasicAuthenticationEntryPoint commence()
-    To link with spring security edit the ProjectSecurityConfig adding http.basic new configuration
+------------------------
+
+Defining Custom AuthenticationEntryPoint
+
+    - Create CustomBasicAuthenticationEntryPoint class to handle 401
+    - Copy the logic of BasicAuthenticationEntryPoint commence()
+    - To link with spring security edit the ProjectSecurityConfig adding http.basic new configuration
+        - this http-basic configuration works in the login but it has no impact in other places of the application
 
     - Test the changes with invalid user and no auth, you will se the custom message for 401:
 
@@ -445,6 +450,46 @@ branch: feature/section7-customization-most-common-use-cases
         "path": "/myAccount"
     }
 
+    - http.exceptionHandling() for a global configuration. It has impact in other places of the application.
+        - the code is commented as a reference
+
 -----------------------
+
+Defining Custom AccessDeniedHandler
+
+    - Implements AccessDeniedHandler in a new class CustomAccessDeniedHandler
+    - Copy the same logic as CustomBasicAuthenticationEntryPoint and edit with FORBIDDEN status
+    - edit ProjectSecurityConfig adding http.exceptionHandling with accessDeniedHandler function
+
+    - test /myAccount1 with valid credentials:
+        {
+            "timestamp": "2025-12-13T11:28:17.660323400",
+            "status": 403,
+            "error": "Forbidden",
+            "message": "Access Denied",
+            "path": "/myAccount1"
+        }
+
+        * Is it more appropriate an 404 resource not found error?
+
+    - it is possible to add .accessDeniedPage("/denied") to show ui page (if there is a ui view)
+        - the code is commented as a reference
+
+---------------------
+
+Session Timeout & invalid session configurations
+
+- default session time is activated (30 minutes)
+- when a login is performed a cookie is created by spring security (JSESSIONID)
+- edit in properties default env. No possible less than 2 minutes.
+    -server.servlet.session.timeout=360   ---> seconds config
+    -server.servlet.session.timeout=5m    ---> minutes config
+
+- add this in ProjectSecurityConfig:
+    http.sessionManagement(smc -> smc.invalidSessionUrl("/invalidSession"))  --> no exists so returns 404
+    is to redirect to that url when the cookie expired
+
+ - go to /myAccount in browser, wait for two minutos and refresh the page. Test successful
+
 
 

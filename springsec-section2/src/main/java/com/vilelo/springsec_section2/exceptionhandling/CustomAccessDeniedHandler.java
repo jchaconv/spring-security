@@ -4,31 +4,33 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class CustomBasicAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
+public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
             throws IOException, ServletException {
 
         LocalDateTime currentTimeStamp = LocalDateTime.now();
-        String message = (authException != null & authException.getMessage() != null) ? authException.getMessage() : "Unauthorized";
+
+        String message = (accessDeniedException != null & accessDeniedException.getMessage() != null)
+                ? accessDeniedException.getMessage() : "Authorization failed";
+
         String path = request.getRequestURI();
 
-        response.setHeader("eazybank-error-reason", "Authentication failed");
+        response.setHeader("eazybank-denied-reason", "Authorization failed");
         // response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase()); -- this for default values
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType("application/json");
 
         //Construct json response
         String jsonResponse = String.format("{\"timestamp\": \"%s\", \"status\": %d, \"error\": \"%s\", \"message\": \"%s\", \"path\": \"%s\"}",
-                currentTimeStamp, HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), message, path);
+                currentTimeStamp, HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase(), message, path);
 
         response.getWriter().write(jsonResponse);
 

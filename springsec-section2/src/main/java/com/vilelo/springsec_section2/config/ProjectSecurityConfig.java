@@ -1,6 +1,7 @@
 package com.vilelo.springsec_section2.config;
 
 
+import com.vilelo.springsec_section2.exceptionhandling.CustomAccessDeniedHandler;
 import com.vilelo.springsec_section2.exceptionhandling.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,16 +25,23 @@ public class ProjectSecurityConfig {
     @Bean
     SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
 
-        http.redirectToHttps(AbstractHttpConfigurer::disable) //Only http
+        http.sessionManagement(smc -> smc.invalidSessionUrl("/invalidSession"))
+                .redirectToHttps(AbstractHttpConfigurer::disable) //Only http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                 .requestMatchers("/myAccount", "/myBalance", "/myCards", "/myLoans").authenticated()
-                .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
+                .requestMatchers("/notices", "/contact", "/error", "/register", "/invalidSession").permitAll());
 
         http.formLogin(withDefaults());
 
         http.httpBasic(hbc ->
                 hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+
+        // It is a global config
+        // http.exceptionHandling(ehc -> ehc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+
+        http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
+        // http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()).accessDeniedPage("/denied"));
 
         return http.build();
     }
@@ -47,7 +55,7 @@ public class ProjectSecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder(); //bcrypt by default
     }
 
 }
