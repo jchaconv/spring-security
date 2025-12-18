@@ -524,3 +524,15 @@ Session Fixation Attack protection with Spring Security
         - no adding code is needed
 
 ---------------------
+
+Listening Authentication Events
+
+- Spring security fires events when authentication succeeds or fails by the use of:
+    - DefaultAuthenticationEventPublisher, takes care of publishing evets (intern logic)
+- I just need to use @EventListener to capture these events and execute business logic based
+  on our requirements, by using these classes:
+    - AuthenticationSuccessEvent
+    - AbstractAuthenticationFailureEvent, it has many implementations
+- Create the bean events.AuthenticationEvents.
+- test a valid and invalid login, I can see the added logs of the bean class.
+-
