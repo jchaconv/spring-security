@@ -516,4 +516,11 @@ Session Fixation Attack protection with Spring Security
     - Session Hijacking: A hacker steals the session Id from a web application
         - HTTPS to prevent this
     - Session Fixation: persuade another user to log in with the same session(by sending a link)
+        - Spring security handles this attack by:
+            - changeSessionId: not create a new session but instead changes the sessionId
+            - newSession: new clean session is created without copying existing attributes
+            - migrateSession: new session and copies all existing session attributes
 
+        - no adding code is needed
+
+---------------------
