@@ -491,5 +491,29 @@ Session Timeout & invalid session configurations
 
  - go to /myAccount in browser, wait for two minutos and refresh the page. Test successful
 
+---------------------
 
+Concurrent Session Control configurations
+
+* This code is commented because test wasn't successful. It is a code valid for old versions.
+
+- Edit ProjectSecurityConfig, in sessionManagement config:
+    - maximumSessions(1)   ---> the first session is terminated when the second session starts. First session returns this when you try to refresh it:
+                                "This session has been expired (possibly due to multiple concurrent logins being attempted as the same user)."
+
+    - maxSessionsPreventsLogin(true)  ---> it returns 401 instead of "Maximum sessions of 1 for this principal exceeded"
+
+    - it is possible to add .expiredUrl() to define a resource where the user will be redirect in case of multiple sessions
+
+
+* New code provided by instructor as a solution of handle maximum number of sessions and the appropriate exception.
+  It doesn't work either.
+
+---------------------
+
+Session Fixation Attack protection with Spring Security
+
+    - Session Hijacking: A hacker steals the session Id from a web application
+        - HTTPS to prevent this
+    - Session Fixation: persuade another user to log in with the same session(by sending a link)
 
