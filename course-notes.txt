@@ -535,4 +535,29 @@ Listening Authentication Events
     - AbstractAuthenticationFailureEvent, it has many implementations
 - Create the bean events.AuthenticationEvents.
 - test a valid and invalid login, I can see the added logs of the bean class.
--
+
+---------------------
+
+Form Login Configurations for MVC or Monolithic apss
+
+- New project eazy-school
+- I think this security configuration is when you have a web interface in the project
+- Useful for a full stack project
+- You can use one of them:
+    - defaultSuccessUrl
+    - successHandler  --- provides more control
+- important to add xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" in html
+
+- Spring security based on this:
+
+    - SecurityContextHolder: Stores authenticated user details. Perform CRUD on SecurityContext. It uses ThreadLocal to provides security context to threads.
+        - SecurityContext: It has the Authentication object stored
+            - Authentication: This object is created in the process of login. It has a boolean like isAuthenticatedUser
+                - Principal: name, username
+                - Credentials: password
+                - Authorities
+
+- Holding strategies for the security context
+    - MODE_THREADLOCAL: default
+    - MODE_INHERITABLETHREADLOCAL: to copy the context details is other thread
+    - MODE_GLOBAL: not for web apps
