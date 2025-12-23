@@ -561,3 +561,98 @@ Form Login Configurations for MVC or Monolithic apss
     - MODE_THREADLOCAL: default
     - MODE_INHERITABLETHREADLOCAL: to copy the context details is other thread
     - MODE_GLOBAL: not for web apps
+
+
+***********************
+Section 8: CORS & CSRF
+***********************
+
+branch: feature/section8-cors-csrf
+
+Attacks, only possible through the browsers:
+
+CORS: Cross Origin Resource Sharing. Is a protocol. Block data transfer between different "origins".
+      Is a protection provided by browser.
+
+CSRF: Cross Site Request Forgery
+
+There is a configuration on an angular application. I only see the demo.
+
+@JsonIgnore  ---> to don't send this field to the client
+
+Run the new script in section8 project and invoke some endpoints, in postman they will be ok.
+But in angular application there is an invocation to /notices endpoint "access to 8080/notices from 4200 has been blocked by CORS policy"
+
+There is a "preflight request" with OPTIONS operation and is like a validation of availability of the resource.
+
+----------------------
+
+Intro to CORS
+
+    - Example: I'm in Peru and I received calls from the same country. I see the +51 identifier.
+      But If I received a call from India, this is a special scenario, I'll be cautious and block the communication.
+
+    - "Origins" a different scheme, domain or port
+
+----------------------
+
+Solution to handle CORS
+
+    - Add at the ProjectSecurityConfig  class ---> http.cors(...)
+        - @CrossOrigin(origins = "http://localhost:4200")  ---> will allow a specified domain
+        - @CrossOrigin(origins = "*")  ---> will allow any domain
+    - The test with the previous configuration was successful(video)
+
+----------------------
+
+CSRF protection inside Spring Security
+
+    - What is the CSRF attack? perform an operation in web application on behalf of a user without their explicit consent.
+
+    - When you access netflix, the site store a cookie on your browser, and it is attached to the domain netflix.com
+    - a hacker sends a link with embeeded form(POST changeEmail netflix submit) the user perform this action. Then the user lost his access.
+      Because, from it's own browser he performed an api netflix operation changing the user email.
+
+    - In projectSecurityConfig there is a line:
+        - .csrfConfig.disable()   --> this is the protection provided by spring security
+
+    - The error is "Invalid CSRF token 'null' was found ..."
+      Spring security throws 403 exception
+
+-----------------------
+
+Solution to handle CSRF attacks
+
+    - secure random token to prevent CSRF attack -> CSRF token or XSRF
+      unique per user session, difficult to guess
+
+    - netflix backend server expects the cookie + CSRF token ... in this case the malicious website
+      does not have the XSRF and Netflix throws an error 403.
+
+    - XSRF can be attached in headers
+
+-----------------------
+
+Implementing CSRF token solution inside backend application
+
+CSRFTokenRepository
+
+- Create CsrfCookieFilter class
+- .csrf() and .addFilterAfter()
+- requireExplicitSave(false) --- no not save JSESSIONID
+- SessionCreationPolicy.ALWAYS
+- add CsrfTokenRequestHandler
+
+- postman test:
+- if you invoke GET then you receive the cookie and XSRF
+- you need to provide the cookie(is Automatically) and the XSRF in the headers
+
+- in the ui application there is some logic with XSRF-TOKEN  --> login.component.ts
+- JSESSIONID + XSRF Token to get successful operations. First perform a login to store both cookies.
+
+
+----------------
+
+Ignoring CSRF protection for public APIs
+
+- add the ignoringRequestMatchers with the public api's (below csrf configuration)
