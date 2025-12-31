@@ -733,3 +733,8 @@ Adding a custom filter using addFilterBefore() method
     - test with username contains "test" to validate the filter - test ok I get a 400 bad request from the custom filter
 --------------------------------------
 Adding a custom filter using addFilterAfter() method
+- AuthoritiesLoggingAfterFilter needs to be executed after the RequestValidationBeforeFilter
+- add to the config with addFilterAfter  --- test ok with logs
+--------------------------------------
+Adding a custom filter using addFilterAt() method
+- no guarantees of order execution. AuthoritiesLoggingAtFilter. add to config. test ok.
