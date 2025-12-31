@@ -656,3 +656,45 @@ CSRFTokenRepository
 Ignoring CSRF protection for public APIs
 
 - add the ignoringRequestMatchers with the public api's (below csrf configuration)
+
+
+
+**************************************************************
+Section 9: Implementing Authorization using Authorities, Roles
+**************************************************************
+branch: feature/section9-implementing-authorization
+
+- Authentication
+    - validate the identity of the user
+    - 401 error response
+
+- Authorization
+    - validate privileges of the authenticated user
+    - in other words user's authorities, privileges or roles are checked
+      for accesing the resources
+    - 403 error response
+--------------------------
+- GrantedAuthority interface handles authorities inside spring security
+    - SimpleGrantedAuthority as impl. There are multiple places in the code where authorities are handled
+--------------------------
+Creating new table authorities to store multiple roles or authorities
+- execute script about authorities(create table and inserts)
+- create Authority and map with Customer
+try with credentials /user:
+    happy@example.com
+    EazyBytes@54321
+--------------------------
+Configuring Authorities inside web application using Spring Security
+- add Authorities in ProjectSecurityConfig with hasAuthority() and hasAnyAuthority()
+    - there is an option with .access() -- accepts expressions
+- test /myAccount?id=1 with happy user, this user has all authorities configured
+
+
+
+
+
+
+
+
+
+
