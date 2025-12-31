@@ -657,8 +657,6 @@ Ignoring CSRF protection for public APIs
 
 - add the ignoringRequestMatchers with the public api's (below csrf configuration)
 
-
-
 **************************************************************
 Section 9: Implementing Authorization using Authorities, Roles
 **************************************************************
@@ -711,7 +709,27 @@ Listening to the Authorization events
 - use /register to create new user
 - i see the event logs about 403 error
 
+**********************************************
+Section 10: Custom filters in spring security
+**********************************************
+branch: feature/section10-custom-filters
 
+- Filters: Multiple of them intercept every request coming to our application
+    - Each filter has its own responsibility(CSRF, CORS, authorization, etc)
+    - They are executed as a chain filter → FilterChainProxy handles this
+    - how to create our own filter and how to inject in the filter chain of execution
 
-
-
+- add this to the main application class → @EnableWebSecurity(debug = true)
+* Important: don't make this change in production application
+- run the app in debug mode
+- invoke /user api and see console logs, SecurityFilterChain
+- add property to see more details from chain filter
+--------------------------------------
+How to create and configure our own custom filter
+Adding a custom filter using addFilterBefore() method
+    - Use interfaces: Filter(Jakarta), GenericFilterBean, OncePerRequestFilter
+    - I need a new filter executed after the cors and csrf filter and before the basicAuthFilter. It will be RequestValidationBeforeFilter
+    - add to ProjectSecurityConfig
+    - test with username contains "test" to validate the filter - test ok I get a 400 bad request from the custom filter
+--------------------------------------
+Adding a custom filter using addFilterAfter() method
