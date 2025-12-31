@@ -688,11 +688,28 @@ Configuring Authorities inside web application using Spring Security
 - add Authorities in ProjectSecurityConfig with hasAuthority() and hasAnyAuthority()
     - there is an option with .access() -- accepts expressions
 - test /myAccount?id=1 with happy user, this user has all authorities configured
+--------------------------
+Authority Vs Role in Spring Security
 
+- Authority
+    - individual privilege
+    - restricting access in a fine-grained manner (VIEW_ACC, VIEW_CARDS)
 
+- Role  → this is better when there are thousands of actions in the application
+    - group of privileges
+    - restricting access in a coarse-grained manner (ROLE_ADMIN, ROLE_USER)
+--------------------------
+Configuring Roles Authorization inside web application using Spring Security
+- use just roles script on authorities table.
+- Use hasRole or hasAnyRole.
+* Remember, although it is shown in the table, the prefix "ROLE_" is not necessary
+- test ok, 403 on acc service because SECRET role is not registered on happy user
+--------------------------
+Listening to the Authorization events
 
-
-
+- create AuthorizationEvents
+- use /register to create new user
+- i see the event logs about 403 error
 
 
 

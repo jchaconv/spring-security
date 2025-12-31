@@ -183,6 +183,8 @@ VALUES (1, 'VIEWLOANS');
 INSERT INTO `authorities` (`customer_id`, `name`)
 VALUES (1, 'VIEWBALANCE');
 
+-- roles in spring security
+
 --DELETE FROM `authorities`;
 
 INSERT INTO `authorities` (`customer_id`, `name`)
