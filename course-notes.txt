@@ -823,5 +823,46 @@ Publish an AuthenticationManager for custom or manual authentication
 - create bean on ProjectSecurityConfig
 - test ok with apiLogin
 
+**********************************
+Section 12: Method Level Security
+**********************************
+branch: feature/section12-method-level-security
 
+@EnableMethodSecurity on top of java methods
+To apply authorization rules
+- Invocation authorization: validates if someone can invoke method based on role/authorities
+- Filtering authorization
+
+prePostEnabled: enables @PreAuthorize and @PostAuthorize  -- use this
+securedEnabled: enables @Secured -- legacy
+jsr250Enabled: enables @RoleAllowed -- legacy
+
+- add annotation to main project class
+--------------------------------------
+Details about method invocation authorization in method level security
+- add this extra check enforce the security by adding checks in multiple layers of the application
+- @PreAuthorize to check authorization before execute method logic
+- @PostAuthorize after the execution of the method, so why is this necessary?
+    - Maybe I have this getLoans() without request parameters, so I need to check the response
+      If there is a username and matches a property, then the authorization is correct.
+      ex: @PostAuthorize("returnObject.username == authentication.principal.username")
+
+- Spring Security handles the methods invocation by AOP
+
+- Logic related to these annotations on AuthorizationManager*MethodInterceptor
+--------------------------------------
+Demo of method level security using @PreAuthorize and @PostAuthorize
+
+@PreAuthorize
+    - edit /myLoans on ProjectSecurityConfig
+    - edit LoanRepo
+    - try to invoke api with correct user and then with other role --- test ok
+
+@PostAuthorize
+    - edit controller on the /myLoans api
+    - the method is intercepted by the annotation and I get a 403 -- test ok
+
+--------------------------------------
+--------------------------------------
+--------------------------------------
 --------------------------------------
