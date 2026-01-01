@@ -831,7 +831,7 @@ branch: feature/section12-method-level-security
 @EnableMethodSecurity on top of java methods
 To apply authorization rules
 - Invocation authorization: validates if someone can invoke method based on role/authorities
-- Filtering authorization
+- Filtering authorization: validates the method input and the output post business logic execution
 
 prePostEnabled: enables @PreAuthorize and @PostAuthorize  -- use this
 securedEnabled: enables @Secured -- legacy
@@ -861,8 +861,15 @@ Demo of method level security using @PreAuthorize and @PostAuthorize
 @PostAuthorize
     - edit controller on the /myLoans api
     - the method is intercepted by the annotation and I get a 403 -- test ok
-
 --------------------------------------
+Details about filtering authorization in method level security
+- Both annotations can be in the same method
+- @PreFilter to validate input
+- @PostFilter
 --------------------------------------
+Demo @PreFilter
+- edit in ContactController
+- @PreFilter("filterObject.contactName != 'Test'")
+    - If the name is Test, then the request body is empty -- test ok
 --------------------------------------
 --------------------------------------
