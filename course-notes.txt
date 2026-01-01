@@ -818,8 +818,10 @@ JWT Expiration
 eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFYXp5IEJhbmsiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6ImhhcHB5QGV4YW1wbGUuY29tIiwiYXV0aG9yaXRpZXMiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImlhdCI6MTc2NzIyMzg2NiwiZXhwIjoxNzY3MjIzODc2fQ.3Z0-crWMcwatwiB_nGYH0PG1smiDa6pWH0_ivqIG23Q
 --------------------------------------
 Publish an AuthenticationManager for custom or manual authentication
-
-
+- create apiLogin on UseController
+- create records(classes with getters but no setters) for Login request and response
+- create bean on ProjectSecurityConfig
+- test ok with apiLogin
 
 
 --------------------------------------
