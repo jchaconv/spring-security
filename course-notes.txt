@@ -867,9 +867,10 @@ Details about filtering authorization in method level security
 - @PreFilter to validate input
 - @PostFilter
 --------------------------------------
-Demo @PreFilter
+Demo @PreFilter and @PostFilter
 - edit in ContactController
 - @PreFilter("filterObject.contactName != 'Test'")
     - If the name is Test, then the request body is empty -- test ok
+- @PostFilter in the same endpoint, the result is the same
 --------------------------------------
 --------------------------------------
