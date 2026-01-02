@@ -942,3 +942,24 @@ Introduction to OpenID Connect
 - IAM (Identity Access Management)
     - OpenID Connect → Authentication
     - OAuth 2.0 → Authorization
+
+************************************************************************
+Section 14: Implementing OAuth2 using spring security and social logins
+************************************************************************
+
+branch: feature/section14-implementing-oauth2
+
+- create new project springsec-oauth2
+    - dependencies: web, security, oauth2 client, oauth2 resource server
+- mvc controller → html
+- properties → until here, login with basic credentials on properties
+- ProjectSecurityConfig → use ClientRegistration
+    - CommonOAuth2Provider enum to see multiple social configs
+    - Go to github → dev settings → oauth app → register
+        - name: eazybytes
+        - homepage and callback url: http://localhost:8080
+        - client-id: Ov23li2g3dLB6GflXIxf
+        - client-secret: 2a11895ce97376edf20d124a95fb4814840a3a6b
+    - do the same process on facebook (i don't do this, the code is commented)
+    - until here configs and app start ok
+
