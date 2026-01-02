@@ -872,5 +872,73 @@ Demo @PreFilter and @PostFilter
 - @PreFilter("filterObject.contactName != 'Test'")
     - If the name is Test, then the request body is empty -- test ok
 - @PostFilter in the same endpoint, the result is the same
+
+*************************************************
+Section 13: Deep dive of OAuth2 & OpenID Connect
+*************************************************
+
+branch: feature/section13-oauth2-openid-connect
+
+OAuth2(Open Authorization) is a framework(security standard) free and open source protocol, used to implement authentication
+and authorization inside a web application. ex: Gmail Credentials are the same for all Google Products. You give one app
+permission to access data in another app.
+
+OAuth2 use a separate Auth Server for authentication and authorization. This server handles the user credentials for all products.
+
+Problems that OAuth2 trying to solve:
+
+- Imagine a bank with three apps(Loans, Cards, Accounts) without OAuth2. The client needs to handle credentials for each application.
+  And every single security change needs to be done across all applications. The advantage of OAuth2 is that you can have separate the Auth Server with its logic
+  from the Business Logic.
+
+- Delegates the authentication and authorization. Imagine that you want to use a PhotoEdit(3rd party site) to edit your Google photos. Without OAuth2 you need to give
+  the 3rd party site your Google credentials to give it permissions to access to your photos. But, the problem is that this site can perform some action on your behalf.
+  Otherwise, with OAuth2 you don't need to give your credentials to the site. Google just authorize with limited permissions by using a temporary token, and this ensures a more secure interaction.
 --------------------------------------
+Introduction to OAUTH2
+
+- oauth.net/2/
+- Terminology
+    - Resource Owner: The end user
+    - Client: PhotoEditor
+    - Authorization Server: store user credentials, performs auth
+    - Resource Server
+    - Scopes: Granular permissions the client wants
+
+- Social login: With Google or Apple(Client id & client secret are used). Slack has this option.
+
 --------------------------------------
+Deep dive on Authorization code grant type flow in OAUTH2
+
+* Basically consists in a communication between Client → Authz Server → Resource Server
+
+- Authorization Code
+    - Only when an end user is involved
+    - Go to https://www.oauth.com/playground/
+    - Each flow has its own steps
+
+- PKCE
+    - Proof key for code exchange
+    - uses a code_verifier at the beginning of the flow and a code_challenge
+
+- Client Credentials
+- Device Code (IoT)
+
+- Refresh Token
+    - When the token is expired
+
+- Implicit Flow (Legacy)
+- Password Grant (Legacy)
+--------------------------------------
+Introduction to OpenID Connect
+
+- OpenID Connect is a protocol that sits on top of the OAuth 2.0
+- OIDC standardizes the scopes to openid, profile, email and address.
+- ID Token using JWT
+- Exposes /userinfo endpoint
+
+- check this: https://www.oauth.com/playground/oidc.html
+
+- IAM (Identity Access Management)
+    - OpenID Connect → Authentication
+    - OAuth 2.0 → Authorization
