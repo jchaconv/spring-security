@@ -1,5 +1,8 @@
 package com.vilelo.springsecoauth2.controllers;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -7,9 +10,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SecureController {
 
     @GetMapping("/secure")
-    public String securePage() {
+    public String securePage(Authentication authentication) {
+        if(authentication instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+            System.out.println("User is authenticated using form login: " + usernamePasswordAuthenticationToken);
+        } else if(authentication instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+            System.out.println("User is authenticated using OAuth2 login: " + oAuth2AuthenticationToken);
+        }
+
         return "secure.html";
     }
+
+    /*@GetMapping("/secure")
+    public String securePage() {
+        return "secure";
+    }*/
 
 
 }

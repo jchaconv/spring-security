@@ -961,5 +961,10 @@ branch: feature/section14-implementing-oauth2
         - client-id: Ov23li2g3dLB6GflXIxf
         - client-secret: 2a11895ce97376edf20d124a95fb4814840a3a6b
     - do the same process on facebook (i don't do this, the code is commented)
-    - until here configs and app start ok
+    - until here app start and configs ok
 
+- add logic in controller to see values on username and oauth authentication objects
+    - eazybytes | 12345
+
+- You can use properties instead of beans on ProjectSecurityConfig
+- tests ok with oauth2 login with github
