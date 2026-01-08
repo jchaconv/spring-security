@@ -1131,5 +1131,31 @@ Social Login integration with the help of KeyCloak
 - Identity Providers → github → add
     - client id and secret from github oauth app
 * not useful for backend enterprise applications
---------------------------------------
 
+
+****************************************************************
+Section 16: OAuth2 Auth Server using Spring Authorization Server
+****************************************************************
+
+branch: feature/section16-spring-auth-server
+
+- docs Spring Authorization Server as an option instead of Keycloak and Okta.
+- don't make the project from scratch with Spring Authorization Server.
+- new project authserver
+    - dependencies: oauth2 auth server, lombok, mysql driver, jpa, jdbc(?)
+- add config class and properties, execute the sql script, that's all, run the app
+- test /myAccount and config some parameters
+    - access token url: http://localhost:9000/oauth2/token
+    - eazybankapi | secretid
+    - scope: openid USER ADMIN
+    - Send as basic auth header
+    - test ok - token generated
+
+- Use this url to see information: http://localhost:9000/.well-known/openid-configuration
+--------------------------------------
+Client credentials grant type flow demo with Spring Auth Server
+- edit properties springsecsection15
+    - jwks url
+- debug mode → KeycloakRoleConverter → realm_access is null
+- edit KeycloakRoleConverter → test ok
+--------------------------------------
