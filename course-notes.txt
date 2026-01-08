@@ -1055,4 +1055,17 @@ Convert spring app into a resource server
       ]
   }
 - test again → 200 ok
-
+--------------------------------------
+Demo with Opaque Tokens
+* With Opaque config, a request is performed every time a client invokes the application(resource server)
+- create KeycloakOpaqueRoleConverter
+- comment the property of jwt openid config
+- add three new properties
+    - introspection_endpoint from openid_config
+    - client-id and secret from another client on keycloak
+- create new client → eazybankintrospect → Service accounts roles
+- add config on ProjectSecurityConfig
+- start app → get new accesstoken → stills the jwt format but the config is opaque
+- I'm sure of that because I made a request the first time and it was ok
+- Then I stopped the keycloak server and I received a 500 error after made a request again
+- tests ok ---> opaque config is commented, jwt is more used by enterprises.
