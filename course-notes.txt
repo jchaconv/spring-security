@@ -42,14 +42,14 @@ Section 1: Getting Started
     -  Is a non functional requirement because no client ask for security in their app.
        Security is important as scalability, performance and availability.
 
-    - Implement security from development phase. The more earlier you implement security in your app
+    - Implement security from development phase. The earlier you implement security in your app
       the better app you build.
 
     - Security Is important because if we lose data, the business loss money.
 
     - Spring security helps to avoid common attacks.
 
-    - Responsability of the dev: the security of the web app layer.
+    - Responsibility of the dev: the security of the web app layer.
         - Authentication
         - Authorization
         - Protection from exploits like CSRF, CORS, etc.
@@ -70,9 +70,9 @@ Section 1: Getting Started
 
     - User entered credentials
     * Spring Security Filters, to identify if the user is authenticated
-    * Authentication, is an object(username, passwrord, isAuth=false) that represents the credentials
+    * Authentication, is an object(username, password, isAuth=false) that represents the credentials
     * Authentication Manager, take the request and deliver it to the next component
-    * Authentication Providers, using it's components, this do the autentication(comparison)
+    * Authentication Providers, using its components, this does the authentication(comparison)
         * UserDetailsManager/Service
         * Password Encoder
 
@@ -968,3 +968,91 @@ branch: feature/section14-implementing-oauth2
 
 - You can use properties instead of beans on ProjectSecurityConfig
 - tests ok with oauth2 login with github
+
+***************************************************
+Section 15: Securing app using OAuth2 and KeyCloak
+***************************************************
+
+branch: feature/section15-oauth2-keycloak
+
+- Login auth servers
+    - we can't control roles and authorities for our business. It has so many restrictions.
+
+- Spring app as a Resource Server
+
+- Keycloak
+    - open source auth server
+    - supports oauth2 and openid connect
+    - realm: security domain to manage a set of users, credentials, roles, groups
+    - client: app to be secured
+    - user federation: link with external user db(ldap, active directory)
+    - identity brokering: link with 3rd party id providers (google, facebook)
+    - admin console
+        - realm: space to handle a specific environment
+        - client:
+
+    - Now the client(postman) invokes my Auth Server(Keycloak)
+    - An enterprise can build an Auth Server from scratch (spring auth server library)
+      or using Products such as Keycloak(open source), Okta, auth0, AWS Cognito, etc.
+
+    - Installation
+        - keycloak.org  → normally, its on the devops team
+        - docker commands:
+            - command 8180:8080, start-dev: setups an in-memory database, add -d to detach mode
+            - the port 8080 in that place is mandatory
+            - docker pull quay.io/keycloak/keycloak:26.5.0
+            - docker run -p 8180:8080 -d -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.5.0 start-dev
+        - localhost:8180  → admin:admin  (takes some time to start the server
+        - create realm → eazybankdev  → select the new realm
+--------------------------------------
+Register client with Client credentials grant type flow:
+
+    - Clients → create client →
+        - client id: eazybankapi
+        - name: eazybankapi
+        - cliente authentication: on
+        - authentication flow: enable just "Service accounts roles"  ---> is the option for client credentials grant type flow
+        - next → ignore url's and save
+--------------------------------------
+Convert spring app into a resource server
+- springsection12 app --> take this and rename
+- oauth2-resource-server dependency
+- delete authentication providers
+- KeycloakRoleConverter responsible for generates jwt token
+- add the config to ProjectSecurityConfig and delete httpbasic and formlogin
+- add properties and provide the auth server details
+    - Configure → Realm settings → Endpoints: OpenID Endpoint Configuration → jwks_uri (different from video)
+    - spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${JWK_SET_URI:http://localhost:8180/realms/master/protocol/openid-connect/certs}
+
+- Delete env variables(JWT_SECRET) from run config
+- run app default with environment --- runs ok
+--------------------------------------
+- test public apis such as notices and contact
+- /myAccount?email=happy@example.com ---> 401
+    - OAuth2.0
+        - token name: AccessToken
+        - Grant type: Client Credentials
+        - access token url: "token_endpoint" ---> the variable from openid config
+        - client id: eazybankapi (from server)
+        - client secret: (from server)
+        - scope: openid email
+        - Client authentication: send client credentials in body
+        - get new access token (5 min expiration by default)
+          → use token(this action saves in a postman variable)
+          → send again the request
+        - now the error is 403 because happy user has no roles assigned on server
+
+- Go to Realm roles → create role → name: USER and ADMIN
+- Go to Clients → eazybankapi → tab Service Account Roles → Assign role → Realm role → USER + ADMIN
+- see the jwt before and after this role assignment on jwt.io, after roles addition this is the difference:
+  "realm_access": {
+      "roles": [
+        "default-roles-master",
+        "offline_access",
+        "ADMIN",
+        "uma_authorization",
+        "USER"
+      ]
+  }
+- test again → 200 ok
+

@@ -17,7 +17,7 @@ public class ProjectSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable) //not recommended for production
                 .authorizeHttpRequests((requests) -> requests.requestMatchers("/secure").authenticated()
                 .anyRequest().permitAll())
                 .formLogin(form -> form.defaultSuccessUrl("/secure", true))
