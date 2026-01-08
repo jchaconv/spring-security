@@ -19,7 +19,7 @@ public class LoansController {
     private final LoanRepository loanRepository;
     private final CustomerRepository customerRepository;
 
-    @PostAuthorize("hasRole('ROOT')")
+    //@PostAuthorize("hasRole('ROOT')")
     @GetMapping("/myLoans")
     public List<Loans> getLoanDetails(@RequestParam String email) {
         Customer customer = customerRepository.findByEmail(email).orElse(null);

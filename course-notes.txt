@@ -1159,3 +1159,9 @@ Client credentials grant type flow demo with Spring Auth Server
 - debug mode → KeycloakRoleConverter → realm_access is null
 - edit KeycloakRoleConverter → test ok
 --------------------------------------
+Updating Spring Auth Server to authenticate the end user using DB
+- add models and config classees
+Auth Code & PKCE grant type flows demo with Spring Auth Server
+- test /myBalance → edit some fields to get token
+- happy@example.com | EazyBytes@54321
+- test pkce ok, i need to comment @PostAuthorize on /loans

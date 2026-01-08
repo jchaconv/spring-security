@@ -15,8 +15,20 @@ import java.util.stream.Collectors;
 public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
 
     @Override
-    public @Nullable Collection<GrantedAuthority> convert(Jwt source) {
+    public @Nullable Collection<GrantedAuthority> convert(Jwt jwt) {
 
+
+        List<String> roles = jwt.getClaimAsStringList("roles");
+
+        if (roles == null || roles.isEmpty()) {
+            return List.of();
+        }
+
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .collect(Collectors.toList());
+
+        /* last solution in the course repo
         ArrayList<String> roles = (ArrayList<String>) source.getClaims().get("scope");
         if(roles == null || roles.isEmpty()) {
             return new ArrayList<>();
@@ -25,6 +37,9 @@ public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedA
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
         return returnValue;
+        */
+
+
         /*Map<String, Object> realmAccess = (Map<String, Object>) source.getClaims().get("realm_access");
         if (realmAccess == null || realmAccess.isEmpty()) {
             return new ArrayList<>();
