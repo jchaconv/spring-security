@@ -1069,3 +1069,29 @@ Demo with Opaque Tokens
 - I'm sure of that because I made a request the first time and it was ok
 - Then I stopped the keycloak server and I received a 500 error after made a request again
 - tests ok ---> opaque config is commented, jwt is more used by enterprises.
+--------------------------------------
+Creating Client and User details inside KeyCloak for Authorization code grant type flow
+- Clients → create client →
+    name: eazybankclient
+    enables Client authentication
+    flow: standard flow
+    valid redirect uris: *
+- Authentication → Policies → password policy → add
+    - min length, uppercase, special characters, etc
+- Users → create user →
+    - username and email: happy@example.com
+    - credentials → set password → Thas1*852
+    - disable temporary option
+    - for autom config: keycloak docs → admin REST API → users → (For now just manually config xd)
+
+- postman (/myBalance) → configure new token
+    - grant type: Authorization Code
+    - check "Authorize using browser"
+    - auth url: {{authorization_endpoint}}  from openid config
+    - access token url: {{token_endpoint}}
+    add client id and secret → get new access token (make sure browser is closed) → 403 (it's ok - no roles yet)
+
+- User → user details → role mapping → Assign role → Realm roles
+- if you want to edit token expiration: realm settings → access token lifespan
+- with "Refresh" postman option a request to the auth server is performed
+- Test ok in browser "Your call is authenticated"
