@@ -1095,3 +1095,20 @@ Creating Client and User details inside KeyCloak for Authorization code grant ty
 - if you want to edit token expiration: realm settings → access token lifespan
 - with "Refresh" postman option a request to the auth server is performed
 - Test ok in browser "Your call is authenticated"
+--------------------------------------
+Testing Authorization code PKCE grant types using Postman App
+
+- When client cannot keep client secret safe (mobile apps, SPA)
+- create client → eazypublicclient
+    - DISABLE client authentication
+    - standard flow enabled
+    - pkce method: S256
+    - valid redirect uris: *
+
+- postman → /myCards → Grant type: Authorization code (With PKCE)
+    - check "Authorize using browser"
+    - auth url and token url same as before
+    - client id: eazypublicclient
+    - client secret blank
+    - code challenge method: S256
+    - get new access token → test ok
