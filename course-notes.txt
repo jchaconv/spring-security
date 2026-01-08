@@ -1080,7 +1080,7 @@ Creating Client and User details inside KeyCloak for Authorization code grant ty
     - min length, uppercase, special characters, etc
 - Users → create user →
     - username and email: happy@example.com
-    - credentials → set password → Thas1*852
+    - credentials → set password → Thas1*853
     - disable temporary option
     - for autom config: keycloak docs → admin REST API → users → (For now just manually config xd)
 
@@ -1112,3 +1112,24 @@ Testing Authorization code PKCE grant types using Postman App
     - client secret blank
     - code challenge method: S256
     - get new access token → test ok
+
+- to test with ui apps
+    - valid redirect uris: http://localhost:4200/dashboard
+    - valid post logout redirect uris: http://localhost:4200/home
+    - web origins: *
+--------------------------------------
+Configuring MFA using KeyCloak
+- Authentication → required actions → configure otp → set as default action
+  → Policies → OTP Policy → look and still as default
+
+- delete happy user and create again → this time you see the option "Configure OTP"
+- this option supports Google & Microsoft Authenticator and FreeOTP
+- scan the qr and login again with postman → you see the field to provide the code
+- test ok
+--------------------------------------
+Social Login integration with the help of KeyCloak
+- Identity Providers → github → add
+    - client id and secret from github oauth app
+* not useful for backend enterprise applications
+--------------------------------------
+
