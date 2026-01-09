@@ -24,14 +24,14 @@ import java.util.Collections;
 @Profile("!prod")
 public class ProjectSecurityConfig {
 
-    /*@Value("${spring.security.oauth2.resourceserver.opaque.introspection-uri}")
+    @Value("${spring.security.oauth2.resourceserver.opaque.introspection-uri}")
     String introspectionUri;
 
     @Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-id}")
     String clientId;
 
     @Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-secret}")
-    String clientSecret;*/
+    String clientSecret;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {

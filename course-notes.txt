@@ -1165,3 +1165,8 @@ Auth Code & PKCE grant type flows demo with Spring Auth Server
 - test /myBalance → edit some fields to get token
 - happy@example.com | EazyBytes@54321
 - test pkce ok, i need to comment @PostAuthorize on /loans
+--------------------------------------
+Opaque Tokens
+- use introspectClient
+- REFERENCE instead of SELF_CONTAINED
+- commented jwt config on projectsecurityconfig resource server
